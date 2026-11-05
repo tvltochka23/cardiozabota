@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <title>КардиоЗабота — Семейный дневник давления</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <style>
     *, ::before, ::after {
       box-sizing: border-box;
@@ -29,23 +30,6 @@
     body.large-mode .bp-digits { font-size: 4.2rem !important; line-height: 1 !important; }
     body.large-mode .readable-text { font-size: 1.18rem !important; line-height: 1.55 !important; }
 
-    h1, h2, h3, p { margin: 0; }
-    ul { list-style: none; margin: 0; padding: 0; }
-    button, input, textarea, select {
-      font-family: inherit;
-      font-size: 100%;
-      margin: 0;
-      padding: 0;
-      background-color: transparent;
-    }
-    button {
-      cursor: pointer;
-      user-select: none;
-      -webkit-user-select: none;
-    }
-    a { color: inherit; text-decoration: inherit; }
-    svg { display: block; vertical-align: middle; }
-
     .hidden { display: none !important; }
     .soft-card {
       background: #FFFFFF;
@@ -70,22 +54,66 @@
 
 <body class="min-h-screen flex justify-center">
 
-  <!-- ЭКРАН ЗАЩИТЫ ПРИ ПРЯМОМ ВХОДЕ ВНЕ МЕССЕНДЖЕРА MAX -->
-  <div id="externalGuardScreen" class="hidden fixed inset-0 z-50 bg-[#F6F5F0] flex flex-col items-center justify-center p-6 text-center">
-    <div class="w-20 h-20 bg-rose-50 border border-rose-200 text-rose-500 rounded-3xl flex items-center justify-center text-4xl mb-4 shadow-sm">
-      ❤️
+  <!-- ЭКРАН-ПРИВЕТСТВИЕ ДЛЯ САЙТА (ПРИ ОТКРЫТИИ БЕЗ MAX) -->
+  <div id="welcomeLandingScreen" class="hidden fixed inset-0 z-50 bg-[#F6F5F0] overflow-y-auto flex flex-col items-center justify-between p-6 sm:p-8">
+    <div class="w-full max-w-sm my-auto space-y-6 text-center">
+      
+      <!-- ЛОГОТИП -->
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-rose-50 border border-rose-200 text-rose-500 text-4xl shadow-sm mb-2">
+        ❤️
+      </div>
+      
+      <div>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200 mb-2">
+          <span>🛡️</span><span>Семейный дневник давления</span>
+        </div>
+        <h1 class="text-3xl font-black text-slate-900 tracking-tight">КардиоЗабота</h1>
+        <p class="text-sm text-slate-500 font-medium mt-2 leading-relaxed">
+          Умный контроль артериального давления и пульса для вас и ваших близких
+        </p>
+      </div>
+
+      <!-- КАРТОЧКА ВОЗМОЖНОСТЕЙ -->
+      <div class="soft-card p-5 text-left space-y-3.5 shadow-sm">
+        <div class="flex items-start gap-3">
+          <span class="text-xl shrink-0">🩺</span>
+          <div>
+            <div class="font-extrabold text-sm text-slate-900">Умные клинические нормы</div>
+            <div class="text-xs text-slate-500">Автоматический расчет безопасных границ по стандартам Минздрава и РКО</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 pt-2 border-t border-slate-100">
+          <span class="text-xl shrink-0">👨‍👩‍👧</span>
+          <div>
+            <div class="font-extrabold text-sm text-slate-900">Оповещение близких</div>
+            <div class="text-xs text-slate-500">Мгновенные уведомления в мессенджер MAX при резких скачках давления</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 pt-2 border-t border-slate-100">
+          <span class="text-xl shrink-0">📊</span>
+          <div>
+            <div class="font-extrabold text-sm text-slate-900">Суточная сводка и отчет</div>
+            <div class="text-xs text-slate-500">Динамика самочувствия и готовая выписка замеров для терапевта в 1 клик</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- КНОПКИ ДЕЙСТВИЯ -->
+      <div class="space-y-3 pt-2">
+        <a href="https://max.ru" target="_blank"
+          class="tactile-btn flex items-center justify-center gap-2 w-full py-4 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base shadow-md">
+          <span>🚀</span><span>Открыть в мессенджере MAX</span>
+        </a>
+        <button onclick="enterDemoMode()"
+          class="tactile-btn w-full py-3 px-4 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-xs hover:bg-slate-50">
+          Попробовать в демо-режиме в браузере →
+        </button>
+      </div>
+
     </div>
-    <h1 class="text-2xl font-black text-slate-900 mb-2">«КардиоЗабота»</h1>
-    <p class="text-sm text-slate-600 mb-6 max-w-xs leading-relaxed">
-      Персональный сервис семейного контроля давления. Приложение защищено и работает внутри мессенджера MAX для автоматической синхронизации данных.
-    </p>
-    <div class="space-y-3 w-full max-w-xs">
-      <a href="https://max.ru" class="tactile-btn block w-full py-3.5 px-4 rounded-2xl bg-blue-600 text-white font-extrabold text-base shadow-md">
-        Открыть в мессенджере MAX
-      </a>
-      <button onclick="dismissGuardScreen()" class="tactile-btn block w-full py-3 px-4 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-xs">
-        Продолжить в демо-режиме
-      </button>
+
+    <div class="text-[11px] text-slate-400 text-center py-2">
+      © «КардиоЗабота». 30 дней бесплатного полного доступа для новых пользователей.
     </div>
   </div>
 
@@ -98,7 +126,7 @@
     <p class="text-sm text-slate-300 mb-6 max-w-xs leading-relaxed">
       Оформите подписку, чтобы продолжить автоматический мониторинг, получать вечерние сводки и оповещения близких.
     </p>
-    <button onclick="openSbpModal()" class="tactile-btn w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 font-extrabold text-white rounded-2xl shadow-lg text-base">
+    <button onclick="alert('Переход к оплате подписки...')" class="tactile-btn w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 font-extrabold text-white rounded-2xl shadow-lg text-base">
       Продлить доступ (199 ₽ / мес)
     </button>
   </div>
@@ -124,7 +152,7 @@
           <span>А+</span>
         </button>
 
-        <button onclick="openSosModal()"
+        <button onclick="alert('Вызов службы скорой медицинской помощи: 103')"
           class="tactile-btn h-12 px-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 shadow-sm flex items-center gap-2 font-black text-base"
           title="Срочная помощь">
           <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
@@ -139,15 +167,7 @@
       <!-- ================= ВКЛАДКА 1: ДНЕВНИК (ГЛАВНАЯ) ================= -->
       <section id="tab-home" class="space-y-4">
 
-        <div id="familySyncBanner" class="hidden px-4 py-2.5 rounded-2xl bg-emerald-50 border border-emerald-200 flex items-center justify-between">
-          <div class="flex items-center gap-2 text-xs font-bold text-emerald-900">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-            <span id="familySyncBannerText">Семейный кабинет подключен</span>
-          </div>
-          <button onclick="pullFamilyCabinet(true)" class="text-xs font-extrabold text-emerald-700 underline">Обновить</button>
-        </div>
-
-        <!-- КАРТОЧКА ДАВЛЕНИЯ + КНОПКА ЗАПИСИ -->
+        <!-- КАРТОЧКА ДАВЛЕНИЯ -->
         <div id="statusCard" class="soft-card p-5 relative overflow-hidden transition-all">
           <div class="flex items-center justify-between mb-3">
             <span id="statusBadge"
@@ -168,7 +188,7 @@
 
             <div class="text-right bg-slate-50 px-4 py-2.5 rounded-2xl border border-slate-100">
               <div class="flex items-center justify-end gap-1 text-rose-500">
-                <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <svg class="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
                   <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                 </svg>
                 <span id="pulseValue" class="text-2xl font-extrabold text-slate-800">—</span>
@@ -177,25 +197,12 @@
             </div>
           </div>
 
-          <p id="statusComment" class="readable-text text-sm text-slate-600 font-medium mt-3 pt-3 border-t border-slate-100">
-            Нажмите кнопку ниже, чтобы записать показатели:
-          </p>
-
           <!-- КНОПКА ЗАПИСИ ДАВЛЕНИЯ -->
           <button onclick="openManualModal()" id="manualRecordBtn"
             class="tactile-btn w-full mt-4 py-4 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-md flex items-center justify-center gap-3">
             <span class="text-2xl">✍️</span>
             <span class="font-extrabold text-lg">Записать давление</span>
           </button>
-
-          <div id="manualShareBar" class="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs font-medium text-slate-400">Авто-оповещение близких активно</span>
-            <button onclick="shareCurrentReading()"
-              class="tactile-btn text-xs font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl flex items-center gap-1">
-              <span>Поделиться</span>
-              <span>→</span>
-            </button>
-          </div>
         </div>
 
         <!-- КАРТОЧКА: ИНТЕРАКТИВНАЯ СВОДКА ЗА ДЕНЬ -->
@@ -229,21 +236,12 @@
           </div>
 
           <div id="summaryAnalysisBox" class="text-xs text-slate-700 leading-relaxed bg-blue-50/60 p-3.5 rounded-2xl border border-blue-100/70">
-            Добавьте утренний и вечерний замеры, чтобы приложение составило суточную динамику.
+            Добавьте замеры, чтобы приложение сформировало анализ суточных колебаний.
           </div>
 
           <p class="text-[10px] text-slate-400 leading-tight pt-1">
-            ⚖️ <i>Сводка носит исключительно информационный характер для самоконтроля (ст. 2 323-ФЗ РФ) и не заменяет консультацию врача. При кризе или резком ухудшении вызывайте скорую (112).</i>
+            ⚖️ <i>Сводка носит исключительно информационный характер для самоконтроля (ст. 2 323-ФЗ РФ) и не заменяет консультацию врача. При ухудшении состояния вызывайте 112.</i>
           </p>
-        </div>
-
-        <!-- ТАБЛЕТКИ НА СЕГОДНЯ -->
-        <div class="soft-card p-5">
-          <div class="flex items-center justify-between mb-3">
-            <h2 class="text-lg font-extrabold text-slate-900">Таблетки на сегодня</h2>
-            <button onclick="switchTab('meds')" class="text-sm font-bold text-blue-600">Изменить →</button>
-          </div>
-          <div id="homeMedsQuickList" class="space-y-2.5"></div>
         </div>
 
         <!-- ИСТОРИЯ ИЗМЕРЕНИЙ -->
@@ -253,14 +251,6 @@
             <span id="historyCountBadge" class="text-xs font-medium text-slate-400">0 записей</span>
           </div>
           <div id="historyList" class="divide-y divide-slate-100"></div>
-
-          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
-            <span class="text-xs text-slate-500">Выписка всех замеров для терапевта</span>
-            <button onclick="downloadDoctorReport()"
-              class="tactile-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs">
-              📄 Скачать для врача
-            </button>
-          </div>
         </div>
 
       </section>
@@ -268,47 +258,21 @@
       <!-- ================= ВКЛАДКА 2: ТАБЛЕТКИ ================= -->
       <section id="tab-meds" class="hidden space-y-4">
         <div class="soft-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-xl font-extrabold text-slate-900">Мои лекарства</h2>
-              <p class="text-xs text-slate-400 font-medium">Напоминания приходят строго по расписанию</p>
-            </div>
-            <button onclick="openAddMedModal()"
-              class="tactile-btn py-2.5 px-4 rounded-xl bg-blue-600 text-white font-extrabold text-xs shadow-sm">
-              + Добавить
-            </button>
+          <h2 class="text-xl font-extrabold text-slate-900">Мои лекарства</h2>
+          <p class="text-xs text-slate-400 font-medium">Контроль регулярного приема назначенных препаратов</p>
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">
+            Список принимаемых таблеток настраивается индивидуально.
           </div>
-          <div id="medsFullList" class="space-y-3"></div>
         </div>
       </section>
 
       <!-- ================= ВКЛАДКА 3: БЛИЗКИЕ ================= -->
       <section id="tab-family" class="hidden space-y-4">
         <div class="soft-card p-5 space-y-4">
-          <div class="flex items-center justify-between">
-            <div>
-              <h2 class="text-xl font-extrabold text-slate-900">Контроль близких</h2>
-              <p class="text-xs text-slate-400 font-medium">Связь через официальный бот MAX</p>
-            </div>
-            <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
-          </div>
-
+          <h2 class="text-xl font-extrabold text-slate-900">Связь с близкими</h2>
           <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
-            <span class="text-xs font-extrabold text-blue-900 block">Ваш личный MAX ID:</span>
-            <div class="flex items-center justify-between">
-              <span id="myDetectedMaxId" class="font-mono text-base font-bold text-blue-950">Определяется в MAX</span>
-              <button onclick="copyMyMaxId()" class="text-xs font-extrabold text-blue-600 underline">Скопировать</button>
-            </div>
-          </div>
-
-          <div class="space-y-3 pt-2">
-            <label class="block text-sm font-bold text-slate-800">MAX ID близкого человека (получателя)</label>
-            <input id="inputRelativeChatId" type="text" placeholder="Введите ID или нажмите ниже"
-              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-mono text-sm font-bold text-slate-900 focus:outline-none"/>
-            <button onclick="fillSelfMaxId()" class="text-xs font-bold text-blue-600 underline block">Подставить мой ID для теста</button>
-            <button onclick="verifyBotConnection()" class="tactile-btn w-full py-3.5 rounded-2xl bg-slate-900 text-white font-extrabold text-sm shadow-md">
-              Проверить доставку в MAX
-            </button>
+            <span class="text-xs font-extrabold text-blue-900 block">Ваш идентификатор в MAX:</span>
+            <span id="myDetectedMaxId" class="font-mono text-base font-bold text-blue-950 block">Определяется в MAX</span>
           </div>
         </div>
       </section>
@@ -368,12 +332,6 @@
           </div>
 
           <div class="pt-2 border-t border-slate-100">
-            <label class="block text-sm font-bold text-slate-800 mb-1">Рекомендация врача при скачке</label>
-            <textarea id="inputDoctorNote" rows="2" placeholder="Назначение вашего терапевта"
-              class="w-full p-3.5 rounded-2xl bg-slate-50 border border-slate-200 font-medium text-slate-900 text-sm focus:outline-none"></textarea>
-          </div>
-
-          <div class="pt-2 border-t border-slate-100">
             <label class="block text-sm font-bold text-slate-800 mb-1.5">Часовой пояс для напоминаний</label>
             <select id="inputTzOffset" class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-bold text-slate-800 text-sm focus:outline-none">
               <option value="2">Калининград (UTC+2)</option>
@@ -388,7 +346,6 @@
               <option value="11">Сахалин, Магадан (UTC+11)</option>
               <option value="12">Камчатка (UTC+12)</option>
             </select>
-            <p class="text-[11px] text-slate-400 mt-1">Напоминания и вечерняя сводка будут приходить строго по вашему местному времени.</p>
           </div>
 
           <button onclick="saveProfileSettings()"
@@ -405,25 +362,25 @@
       <div class="w-full max-w-[440px] px-3 py-2 grid grid-cols-4 gap-1">
         <button onclick="switchTab('home')" id="nav-home"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-blue-600 bg-blue-50 font-bold">
-          <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+          <svg class="w-6 h-6 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           <span class="text-[11px]">Дневник</span>
         </button>
 
         <button onclick="switchTab('meds')" id="nav-meds"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
-          <svg class="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span class="text-[11px]">Таблетки</span>
         </button>
 
         <button onclick="switchTab('family')" id="nav-family"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
-          <svg class="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
           <span class="text-[11px]">Близкие</span>
         </button>
 
         <button onclick="switchTab('profile')" id="nav-profile"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
-          <svg class="w-6 h-6 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+          <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           <span class="text-[11px]">Анкета</span>
         </button>
       </div>
@@ -435,8 +392,8 @@
     <div class="bg-white w-full max-w-[400px] rounded-3xl p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between">
         <div>
-          <h3 id="manualModalTitle" class="text-xl font-extrabold text-slate-900">Записать давление</h3>
-          <p id="manualModalSubtitle" class="text-xs text-slate-400 font-medium">Укажите цифры верхнего и нижнего давления</p>
+          <h3 class="text-xl font-extrabold text-slate-900">Записать давление</h3>
+          <p class="text-xs text-slate-400 font-medium">Укажите цифры верхнего и нижнего давления</p>
         </div>
         <button onclick="closeManualModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-lg font-bold">✕</button>
       </div>
@@ -486,11 +443,9 @@
       highLimit: 140,
       lowLimit: 95,
       doctorNote: "",
-      relativeName: "Близкий человек (в MAX)",
       relativeChatId: "",
       largeFont: false,
-      readings: [],
-      meds: []
+      readings: []
     };
 
     let state = Object.assign({}, defaultState);
@@ -538,8 +493,9 @@
       const maxUser = window.WebApp?.initDataUnsafe?.user;
       const detectedId = maxUser?.id || urlParams.get("user_id") || urlParams.get("userId");
 
-      if (!detectedId && !urlParams.get("dev") && !state.myMaxUserId) {
-        document.getElementById("externalGuardScreen").classList.remove("hidden");
+      // Если зашли напрямую из браузера без сессии MAX и без демо
+      if (!detectedId && !urlParams.get("dev") && !sessionStorage.getItem("cardio_demo_mode")) {
+        document.getElementById("welcomeLandingScreen").classList.remove("hidden");
       }
 
       if (detectedId) {
@@ -560,8 +516,9 @@
       pullCloudState();
     }
 
-    function dismissGuardScreen() {
-      document.getElementById("externalGuardScreen").classList.add("hidden");
+    function enterDemoMode() {
+      sessionStorage.setItem("cardio_demo_mode", "true");
+      document.getElementById("welcomeLandingScreen").classList.add("hidden");
     }
 
     function checkTrial() {
@@ -697,10 +654,8 @@
       document.getElementById("inputHeight").value = state.height || "";
       document.getElementById("inputWeight").value = state.weight || "";
       document.getElementById("checkDiabetes").checked = !!state.hasDiabetes;
-      document.getElementById("inputDoctorNote").value = state.doctorNote || "";
       document.getElementById("inputTzOffset").value = state.tzOffset || 3;
       document.getElementById("myDetectedMaxId").textContent = state.myMaxUserId || "Определяется в MAX";
-      document.getElementById("inputRelativeChatId").value = state.relativeChatId || "";
     }
 
     function saveProfileSettings() {
@@ -709,7 +664,6 @@
       state.height = Number(document.getElementById("inputHeight").value) || 170;
       state.weight = Number(document.getElementById("inputWeight").value) || 75;
       state.hasDiabetes = document.getElementById("checkDiabetes").checked;
-      state.doctorNote = document.getElementById("inputDoctorNote").value.trim();
       state.tzOffset = Number(document.getElementById("inputTzOffset").value) || 3;
 
       recalcClinicalNorms();
