@@ -30,7 +30,7 @@
     body.large-mode .bp-digits { font-size: 4.2rem !important; line-height: 1 !important; }
     body.large-mode .readable-text { font-size: 1.18rem !important; line-height: 1.55 !important; }
 
-    .hidden { display: none !important; }
+    .hidden { display: none !important; pointer-events: none !important; }
     .soft-card {
       background: #FFFFFF;
       border-radius: 1.75rem;
@@ -40,10 +40,13 @@
     .tactile-btn {
       transition: transform 0.08s ease, opacity 0.08s ease, background-color 0.15s ease;
       touch-action: manipulation;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
     }
     .tactile-btn:active {
       transform: scale(0.97);
-      opacity: 0.9;
+      opacity: 0.88;
     }
     .bp-digits {
       font-variant-numeric: tabular-nums;
@@ -55,7 +58,7 @@
 <body class="min-h-screen flex justify-center">
 
   <!-- ЭКРАН-ПРИВЕТСТВИЕ ДЛЯ САЙТА (ПРИ ОТКРЫТИИ БЕЗ MAX) -->
-  <div id="welcomeLandingScreen" class="hidden fixed inset-0 z-50 bg-[#F6F5F0] overflow-y-auto flex flex-col items-center justify-between p-6 sm:p-8">
+  <div id="welcomeLandingScreen" class="hidden fixed inset-0 z-50 bg-[#F6F5F0] overflow-y-auto flex flex-col items-center justify-between p-6 sm:p-8" style="display: none;">
     <div class="w-full max-w-sm my-auto space-y-6 text-center">
       
       <!-- ЛОГОТИП -->
@@ -79,7 +82,7 @@
           <span class="text-xl shrink-0">🩺</span>
           <div>
             <div class="font-extrabold text-sm text-slate-900">Умные клинические нормы</div>
-            <div class="text-xs text-slate-500">Автоматический расчет безопасных границ по стандартам Минздрава и РКО</div>
+            <div class="text-xs text-slate-500">Автоматический расчет границ по стандартам Минздрава и РКО</div>
           </div>
         </div>
         <div class="flex items-start gap-3 pt-2 border-t border-slate-100">
@@ -104,7 +107,7 @@
           class="tactile-btn flex items-center justify-center gap-2 w-full py-4 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-extrabold text-base shadow-md">
           <span>🚀</span><span>Открыть в мессенджере MAX</span>
         </a>
-        <button onclick="enterDemoMode()"
+        <button type="button" onclick="enterDemoMode()"
           class="tactile-btn w-full py-3 px-4 rounded-2xl bg-white border border-slate-200 text-slate-700 font-bold text-xs shadow-xs hover:bg-slate-50">
           Попробовать в демо-режиме в браузере →
         </button>
@@ -118,7 +121,7 @@
   </div>
 
   <!-- ЭКРАН ЗАВЕРШЕНИЯ 30-ДНЕВНОГО ТРИАЛА -->
-  <div id="trialExpiredScreen" class="hidden fixed inset-0 z-50 bg-slate-900/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white">
+  <div id="trialExpiredScreen" class="hidden fixed inset-0 z-50 bg-slate-900/85 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center text-white" style="display: none;">
     <div class="w-16 h-16 bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-2xl flex items-center justify-center text-3xl mb-3">
       ⏳
     </div>
@@ -126,7 +129,7 @@
     <p class="text-sm text-slate-300 mb-6 max-w-xs leading-relaxed">
       Оформите подписку, чтобы продолжить автоматический мониторинг, получать вечерние сводки и оповещения близких.
     </p>
-    <button onclick="alert('Переход к оплате подписки...')" class="tactile-btn w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 font-extrabold text-white rounded-2xl shadow-lg text-base">
+    <button type="button" onclick="alert('Переход к оплате подписки...')" class="tactile-btn w-full max-w-xs py-4 bg-emerald-500 hover:bg-emerald-600 font-extrabold text-white rounded-2xl shadow-lg text-base">
       Продлить доступ (199 ₽ / мес)
     </button>
   </div>
@@ -146,13 +149,13 @@
       </div>
 
       <div class="flex items-center gap-2.5">
-        <button onclick="toggleLargeFont()" id="fontToggleBtn"
+        <button type="button" onclick="toggleLargeFont()" id="fontToggleBtn"
           class="tactile-btn h-12 px-4 rounded-2xl bg-white border border-slate-200 shadow-sm flex items-center gap-1.5 font-bold text-slate-700 text-base"
           title="Крупный шрифт">
           <span>А+</span>
         </button>
 
-        <button onclick="alert('Вызов службы скорой медицинской помощи: 103')"
+        <button type="button" onclick="callEmergency()"
           class="tactile-btn h-12 px-4 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 shadow-sm flex items-center gap-2 font-black text-base"
           title="Срочная помощь">
           <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
@@ -198,7 +201,7 @@
           </div>
 
           <!-- КНОПКА ЗАПИСИ ДАВЛЕНИЯ -->
-          <button onclick="openManualModal()" id="manualRecordBtn"
+          <button type="button" onclick="openManualModal()" id="manualRecordBtn"
             class="tactile-btn w-full mt-4 py-4 px-5 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-md flex items-center justify-center gap-3">
             <span class="text-2xl">✍️</span>
             <span class="font-extrabold text-lg">Записать давление</span>
@@ -251,6 +254,14 @@
             <span id="historyCountBadge" class="text-xs font-medium text-slate-400">0 записей</span>
           </div>
           <div id="historyList" class="divide-y divide-slate-100"></div>
+
+          <div class="pt-2 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-xs text-slate-500">Выписка всех замеров</span>
+            <button type="button" onclick="downloadDoctorReport()"
+              class="tactile-btn px-3.5 py-2 rounded-xl bg-slate-100 text-slate-800 font-bold text-xs">
+              📄 Скачать для врача
+            </button>
+          </div>
         </div>
 
       </section>
@@ -258,11 +269,14 @@
       <!-- ================= ВКЛАДКА 2: ТАБЛЕТКИ ================= -->
       <section id="tab-meds" class="hidden space-y-4">
         <div class="soft-card p-5 space-y-4">
-          <h2 class="text-xl font-extrabold text-slate-900">Мои лекарства</h2>
-          <p class="text-xs text-slate-400 font-medium">Контроль регулярного приема назначенных препаратов</p>
-          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">
-            Список принимаемых таблеток настраивается индивидуально.
+          <div class="flex items-center justify-between">
+            <h2 class="text-xl font-extrabold text-slate-900">Мои лекарства</h2>
+            <button type="button" onclick="openAddMedModal()" class="tactile-btn py-2 px-3 rounded-xl bg-blue-600 text-white font-extrabold text-xs shadow-sm">
+              + Добавить
+            </button>
           </div>
+          <p class="text-xs text-slate-400 font-medium">Контроль регулярного приема назначенных препаратов</p>
+          <div id="medsListContainer" class="space-y-2.5"></div>
         </div>
       </section>
 
@@ -273,6 +287,14 @@
           <div class="p-4 rounded-2xl bg-blue-50 border border-blue-100 space-y-2">
             <span class="text-xs font-extrabold text-blue-900 block">Ваш идентификатор в MAX:</span>
             <span id="myDetectedMaxId" class="font-mono text-base font-bold text-blue-950 block">Определяется в MAX</span>
+          </div>
+          <div class="space-y-2 pt-2">
+            <label class="block text-xs font-bold text-slate-700">MAX ID близкого человека (получателя)</label>
+            <input id="inputRelativeChatId" type="text" placeholder="Введите ID или подставьте свой"
+              class="w-full px-4 py-3 rounded-2xl bg-slate-50 border border-slate-200 font-mono text-sm font-bold text-slate-900 focus:outline-none"/>
+            <button type="button" onclick="saveRelativeId()" class="tactile-btn w-full py-3 bg-slate-900 text-white font-extrabold text-xs rounded-xl shadow-md">
+              Сохранить контакт
+            </button>
           </div>
         </div>
       </section>
@@ -348,7 +370,7 @@
             </select>
           </div>
 
-          <button onclick="saveProfileSettings()"
+          <button type="button" onclick="saveProfileSettings()"
             class="tactile-btn w-full py-4 rounded-2xl bg-blue-600 text-white font-extrabold text-base shadow-md">
             Сохранить анкету
           </button>
@@ -360,25 +382,25 @@
     <!-- НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ -->
     <nav class="fixed bottom-0 left-0 right-0 z-30 flex justify-center bg-white/95 backdrop-blur-md border-t border-slate-200">
       <div class="w-full max-w-[440px] px-3 py-2 grid grid-cols-4 gap-1">
-        <button onclick="switchTab('home')" id="nav-home"
+        <button type="button" onclick="switchTab('home')" id="nav-home"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-blue-600 bg-blue-50 font-bold">
           <svg class="w-6 h-6 fill-current shrink-0" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
           <span class="text-[11px]">Дневник</span>
         </button>
 
-        <button onclick="switchTab('meds')" id="nav-meds"
+        <button type="button" onclick="switchTab('meds')" id="nav-meds"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
           <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           <span class="text-[11px]">Таблетки</span>
         </button>
 
-        <button onclick="switchTab('family')" id="nav-family"
+        <button type="button" onclick="switchTab('family')" id="nav-family"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
           <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
           <span class="text-[11px]">Близкие</span>
         </button>
 
-        <button onclick="switchTab('profile')" id="nav-profile"
+        <button type="button" onclick="switchTab('profile')" id="nav-profile"
           class="tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold">
           <svg class="w-6 h-6 fill-none stroke-current stroke-2 shrink-0" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
           <span class="text-[11px]">Анкета</span>
@@ -388,14 +410,14 @@
   </div>
 
   <!-- МОДАЛЬНОЕ ОКНО: ЗАПИСЬ ДАВЛЕНИЯ -->
-  <div id="manualModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4">
+  <div id="manualModal" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-4" style="display: none;">
     <div class="bg-white w-full max-w-[400px] rounded-3xl p-6 space-y-5 shadow-2xl">
       <div class="flex items-center justify-between">
         <div>
           <h3 class="text-xl font-extrabold text-slate-900">Записать давление</h3>
           <p class="text-xs text-slate-400 font-medium">Укажите цифры верхнего и нижнего давления</p>
         </div>
-        <button onclick="closeManualModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-lg font-bold">✕</button>
+        <button type="button" onclick="closeManualModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 text-lg font-bold">✕</button>
       </div>
 
       <div class="grid grid-cols-2 gap-3">
@@ -417,13 +439,13 @@
         <input id="manPulse" type="number" placeholder="70" class="w-24 text-right bg-transparent font-black text-2xl text-slate-900 focus:outline-none"/>
       </div>
 
-      <button onclick="saveManualReading()" class="tactile-btn w-full py-4 rounded-2xl bg-blue-600 text-white font-extrabold text-base shadow-md">
+      <button type="button" onclick="saveManualReading()" class="tactile-btn w-full py-4 rounded-2xl bg-blue-600 text-white font-extrabold text-base shadow-md">
         Сохранить показатели
       </button>
     </div>
   </div>
 
-  <div id="toastBox" class="hidden fixed top-6 z-50 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-xl"></div>
+  <div id="toastBox" class="hidden fixed top-6 z-50 left-1/2 -translate-x-1/2 px-4 py-2.5 rounded-2xl bg-slate-900 text-white text-xs font-bold shadow-xl" style="display: none;"></div>
 
   <!-- СКРИПТ ПРИЛОЖЕНИЯ -->
   <script>
@@ -445,19 +467,20 @@
       doctorNote: "",
       relativeChatId: "",
       largeFont: false,
-      readings: []
+      readings: [],
+      meds: []
     };
 
     let state = Object.assign({}, defaultState);
 
     try {
-      const stored = localStorage.getItem("cardio_app_v11");
+      const stored = localStorage.getItem("cardio_app_v12");
       if (stored) state = Object.assign({}, defaultState, JSON.parse(stored));
     } catch(e) {}
 
     function saveState() {
       try {
-        localStorage.setItem("cardio_app_v11", JSON.stringify(state));
+        localStorage.setItem("cardio_app_v12", JSON.stringify(state));
       } catch(e){}
 
       const syncKey = state.familyId || (state.myMaxUserId ? `max_user_${state.myMaxUserId}` : "");
@@ -490,15 +513,19 @@
 
     function initApp() {
       const urlParams = new URLSearchParams(window.location.search);
-      
-      // Универсальный поиск пользователя из любого мессенджера (MAX, Telegram и др.)
       const webAppContext = window.WebApp || window.MaxWebApp || window.Telegram?.WebApp;
       const maxUser = webAppContext?.initDataUnsafe?.user;
       const detectedId = maxUser?.id || maxUser?.user_id || urlParams.get("user_id") || urlParams.get("userId") || urlParams.get("id");
 
-      // Если зашли напрямую из браузера (не в мессенджере) и нет демо-режима
+      const welcomeEl = document.getElementById("welcomeLandingScreen");
+
+      // Если запущено напрямую в браузере без параметров и не в демо-режиме
       if (!detectedId && !urlParams.get("dev") && !sessionStorage.getItem("cardio_demo_mode")) {
-        document.getElementById("welcomeLandingScreen").classList.remove("hidden");
+        welcomeEl.classList.remove("hidden");
+        welcomeEl.style.display = "flex";
+      } else {
+        welcomeEl.classList.add("hidden");
+        welcomeEl.style.display = "none";
       }
 
       if (detectedId) {
@@ -521,39 +548,23 @@
       pullCloudState();
     }
 
-      // Если зашли напрямую из браузера без сессии MAX и без демо
-      if (!detectedId && !urlParams.get("dev") && !sessionStorage.getItem("cardio_demo_mode")) {
-        document.getElementById("welcomeLandingScreen").classList.remove("hidden");
-      }
-
-      if (detectedId) {
-        state.myMaxUserId = String(detectedId);
-        state.familyId = `max_user_${detectedId}`;
-        if (maxUser?.first_name && !state.name) state.name = maxUser.first_name;
-      }
-
-      if (!state.trialStart) {
-        state.trialStart = Date.now();
-        saveState();
-      }
-
-      checkTrial();
-      syncInputsFromState();
-      recalcClinicalNorms();
-      renderAll();
-      pullCloudState();
-    }
-
     function enterDemoMode() {
       sessionStorage.setItem("cardio_demo_mode", "true");
-      document.getElementById("welcomeLandingScreen").classList.add("hidden");
+      const welcomeEl = document.getElementById("welcomeLandingScreen");
+      welcomeEl.classList.add("hidden");
+      welcomeEl.style.display = "none";
     }
 
     function checkTrial() {
       if (state.isPro) return;
       const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+      const trialEl = document.getElementById("trialExpiredScreen");
       if (state.trialStart && (Date.now() - state.trialStart > thirtyDays)) {
-        document.getElementById("trialExpiredScreen").classList.remove("hidden");
+        trialEl.classList.remove("hidden");
+        trialEl.style.display = "flex";
+      } else {
+        trialEl.classList.add("hidden");
+        trialEl.style.display = "none";
       }
     }
 
@@ -652,6 +663,11 @@
       el.innerHTML = "";
       document.getElementById("historyCountBadge").textContent = `${state.readings.length} записей`;
 
+      if (state.readings.length === 0) {
+        el.innerHTML = '<div class="py-4 text-center text-xs text-slate-400">История пуста. Нажмите «Записать давление».</div>';
+        return;
+      }
+
       state.readings.slice(0, 10).forEach(r => {
         const item = document.createElement("div");
         item.className = "py-3 flex items-center justify-between";
@@ -667,6 +683,48 @@
       });
     }
 
+    function renderMeds() {
+      const el = document.getElementById("medsListContainer");
+      if (!el) return;
+      el.innerHTML = "";
+      if (!state.meds || state.meds.length === 0) {
+        el.innerHTML = '<div class="p-4 rounded-2xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">Препараты еще не добавлены. Нажмите «+ Добавить».</div>';
+        return;
+      }
+      state.meds.forEach((m, idx) => {
+        const item = document.createElement("div");
+        item.className = "p-3.5 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-between";
+        item.innerHTML = `
+          <div>
+            <span class="font-extrabold text-sm text-slate-900 block">${m.name}</span>
+            <span class="text-xs text-slate-400">${m.dosage || 'По назначению'} • ${m.time || 'Утро'}</span>
+          </div>
+          <button type="button" onclick="deleteMed(${idx})" class="text-xs font-bold text-rose-500 px-2 py-1">Удалить</button>
+        `;
+        el.appendChild(item);
+      });
+    }
+
+    function openAddMedModal() {
+      const name = prompt("Введите название препарата (например: Лозартан):");
+      if (!name || !name.trim()) return;
+      const time = prompt("Время приема (например: 08:00):", "08:00") || "08:00";
+      state.meds = state.meds || [];
+      state.meds.push({ name: name.trim(), time: time.trim() });
+      saveState();
+      renderMeds();
+      showToast("Препарат добавлен");
+    }
+
+    function deleteMed(idx) {
+      if (confirm("Удалить этот препарат из списка?")) {
+        state.meds.splice(idx, 1);
+        saveState();
+        renderMeds();
+        showToast("Препарат удален");
+      }
+    }
+
     function renderAll() {
       if (state.name) {
         document.getElementById("userNameHeader").textContent = state.name;
@@ -674,6 +732,7 @@
       renderCurrentReading();
       renderDailySummary();
       renderHistoryList();
+      renderMeds();
     }
 
     function syncInputsFromState() {
@@ -684,6 +743,7 @@
       document.getElementById("checkDiabetes").checked = !!state.hasDiabetes;
       document.getElementById("inputTzOffset").value = state.tzOffset || 3;
       document.getElementById("myDetectedMaxId").textContent = state.myMaxUserId || "Определяется в MAX";
+      document.getElementById("inputRelativeChatId").value = state.relativeChatId || "";
     }
 
     function saveProfileSettings() {
@@ -701,8 +761,28 @@
       switchTab("home");
     }
 
-    function openManualModal() { document.getElementById("manualModal").classList.remove("hidden"); }
-    function closeManualModal() { document.getElementById("manualModal").classList.add("hidden"); }
+    function saveRelativeId() {
+      const val = document.getElementById("inputRelativeChatId").value.trim();
+      if (!val) {
+        showToast("Введите ID близкого");
+        return;
+      }
+      state.relativeChatId = val;
+      saveState();
+      showToast("ID близкого сохранен");
+    }
+
+    function openManualModal() {
+      const m = document.getElementById("manualModal");
+      m.classList.remove("hidden");
+      m.style.display = "flex";
+    }
+
+    function closeManualModal() {
+      const m = document.getElementById("manualModal");
+      m.classList.add("hidden");
+      m.style.display = "none";
+    }
 
     function saveManualReading() {
       const sys = Number(document.getElementById("manSys").value);
@@ -710,7 +790,7 @@
       const pulse = Number(document.getElementById("manPulse").value) || 70;
 
       if (!sys || !dia) {
-        showToast("Введите показатели");
+        showToast("Введите показатели давления");
         return;
       }
 
@@ -727,11 +807,15 @@
 
     function switchTab(t) {
       ["home", "meds", "family", "profile"].forEach(tab => {
-        document.getElementById(`tab-${tab}`).classList.toggle("hidden", tab !== t);
+        const el = document.getElementById(`tab-${tab}`);
         const nav = document.getElementById(`nav-${tab}`);
         if (tab === t) {
+          el.classList.remove("hidden");
+          el.style.display = "block";
           nav.className = "tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-blue-600 bg-blue-50 font-bold";
         } else {
+          el.classList.add("hidden");
+          el.style.display = "none";
           nav.className = "tactile-btn py-2 rounded-2xl flex flex-col items-center justify-center gap-1 text-slate-500 font-semibold";
         }
       });
@@ -744,13 +828,45 @@
       saveState();
     }
 
+    function callEmergency() {
+      if (confirm("Вызвать службу скорой медицинской помощи (103)?")) {
+        window.location.href = "tel:103";
+      }
+    }
+
+    function downloadDoctorReport() {
+      if (!state.readings || state.readings.length === 0) {
+        showToast("Нет записей для формирования отчета");
+        return;
+      }
+      let report = `ВЫПИСКА ДНЕВНИКА АРТЕРИАЛЬНОГО ДАВЛЕНИЯ\n`;
+      report += `Пациент: ${state.name || 'Не указано'}\n`;
+      report += `Возраст: ${state.age || '—'} лет | ИМТ: ${((state.weight || 75) / Math.pow((state.height || 170)/100, 2)).toFixed(1)}\n`;
+      report += `Период: ${new Date(state.readings[state.readings.length - 1].timestamp).toLocaleDateString()} — ${new Date(state.readings[0].timestamp).toLocaleDateString()}\n\n`;
+      report += `Дата и время | АД (мм рт. ст.) | Пульс (уд/мин)\n`;
+      report += `--------------------------------------------------\n`;
+      state.readings.forEach(r => {
+        const d = new Date(r.timestamp).toLocaleString();
+        report += `${d} | ${r.sys}/${r.dia} | ${r.pulse || 70}\n`;
+      });
+      const blob = new Blob([report], { type: "text/plain;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `cardio_report_${Date.now()}.txt`;
+      a.click();
+    }
+
     let toastTimer;
     function showToast(text) {
       const b = document.getElementById("toastBox");
       b.textContent = text;
       b.classList.remove("hidden");
+      b.style.display = "block";
       clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => b.classList.add("hidden"), 3000);
+      toastTimer = setTimeout(() => {
+        b.classList.add("hidden");
+        b.style.display = "none";
+      }, 3000);
     }
 
     document.addEventListener("DOMContentLoaded", initApp);
