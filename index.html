@@ -490,8 +490,36 @@
 
     function initApp() {
       const urlParams = new URLSearchParams(window.location.search);
-      const maxUser = window.WebApp?.initDataUnsafe?.user;
-      const detectedId = maxUser?.id || urlParams.get("user_id") || urlParams.get("userId");
+      
+      // Универсальный поиск пользователя из любого мессенджера (MAX, Telegram и др.)
+      const webAppContext = window.WebApp || window.MaxWebApp || window.Telegram?.WebApp;
+      const maxUser = webAppContext?.initDataUnsafe?.user;
+      const detectedId = maxUser?.id || maxUser?.user_id || urlParams.get("user_id") || urlParams.get("userId") || urlParams.get("id");
+
+      // Если зашли напрямую из браузера (не в мессенджере) и нет демо-режима
+      if (!detectedId && !urlParams.get("dev") && !sessionStorage.getItem("cardio_demo_mode")) {
+        document.getElementById("welcomeLandingScreen").classList.remove("hidden");
+      }
+
+      if (detectedId) {
+        state.myMaxUserId = String(detectedId);
+        state.familyId = `max_user_${detectedId}`;
+        if ((maxUser?.first_name || maxUser?.name) && !state.name) {
+          state.name = maxUser.first_name || maxUser.name;
+        }
+      }
+
+      if (!state.trialStart) {
+        state.trialStart = Date.now();
+        saveState();
+      }
+
+      checkTrial();
+      syncInputsFromState();
+      recalcClinicalNorms();
+      renderAll();
+      pullCloudState();
+    }
 
       // Если зашли напрямую из браузера без сессии MAX и без демо
       if (!detectedId && !urlParams.get("dev") && !sessionStorage.getItem("cardio_demo_mode")) {
